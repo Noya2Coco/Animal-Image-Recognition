@@ -1,0 +1,1 @@
+25-05-2024 >> v0.1 - images per animals : 48 for train, 12 for validation (some doubles)
