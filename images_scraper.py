@@ -11,7 +11,7 @@ import requests
 from urllib.parse import urljoin
 
 # Définir une taille minimale pour les images afin d'éviter les icônes
-MIN_IMAGE_SIZE_THRESHOLD = 1024  # 1 KB
+MIN_IMAGE_SIZE_THRESHOLD = 5000  # 5 KB
 
 def save_base64_image(base64_data, filename):
     img_data = base64.b64decode(base64_data)
@@ -32,7 +32,7 @@ def scrape_images(query, max_images, save_dir):
     chrome_options.add_argument("--disable-popup-blocking")
     chrome_options.add_argument("--incognito")
 
-    url = f"https://www.google.com/search?q='{query} animal'&tbm=isch"
+    url = f"https://www.google.com/search?q={query} animal&tbm=isch"
     # test with 'photography'
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
@@ -71,7 +71,7 @@ def scrape_images(query, max_images, save_dir):
     img_count = 0
     for i, img in enumerate(images):
         # Sauter la première image qui est souvent le logo de Google
-        if i == 0 or i == 1:
+        if i == 0 or i == 1 or i == 2:
             continue
 
         img_src = img.get('src')
@@ -126,4 +126,4 @@ def scrape_images_for_all_animals(file_path, max_images, base_save_dir):
         print(f"Finished scraping images for {animal}")
 
 # Exemple d'utilisation
-scrape_images_for_all_animals('animals.txt', 100, 'scraper/animals')
+scrape_images_for_all_animals('animals.txt', 1, 'animals_prediction')
