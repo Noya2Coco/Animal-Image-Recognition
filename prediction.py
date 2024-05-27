@@ -4,13 +4,14 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 import numpy as np
 from file_utils import read_animal_list
+import config
 
-# Charger le modèle enregistré
-model = tf.keras.models.load_model('animal_classifier_models/v03.keras')
-#model = tf.keras.models.load_model('animal_classifier_models/v01.h5')
+# Load the saved model
+model = tf.keras.models.load_model(f"./animal_classifier_models/{config.VERSION}.keras")
+#model = tf.keras.models.load_model('animal_classifier_models/v0.3.h5')
+#model = tf.keras.models.load_model('animal_classifier_models/v0.1.h5')
 
-animals = read_animal_list("animals.txt")
-
+animals = read_animal_list()
 
 def predict_image(img_path, model, classes, top_k=5):
     # Charger l'image
@@ -33,11 +34,10 @@ def get_animal_score_and_ranking(prediction, chosen_animal):
         if animal == chosen_animal:
             return float(score), ranking
     return None, None
-    
 
 def predict_all_images():
     animals_predictions = {}
-    root_path = "animals_prediction"
+    root_path = config.PREDICTION_PATH
 
     for root_folder, subfolders, files in os.walk(root_path):
         animal_name = os.path.basename(root_folder)
@@ -129,7 +129,5 @@ def calculate_statistics(scores, ranks, differences):
         "max_difference_with_best_scores": max_difference,
     }
 
-
-# Exemple d'utilisation
 predictions = predict_all_images()
 print(json.dumps(predictions, indent=4))

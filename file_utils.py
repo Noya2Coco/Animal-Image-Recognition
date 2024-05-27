@@ -1,8 +1,9 @@
 import os
 import shutil
 import random
+import config
 
-def read_animal_list(file_path):
+def read_animal_list(file_path=config.ANIMALS_NAMES_PATH):
     with open(file_path, 'r') as file:
         animals = [line.strip() for line in file.readlines()]
     return animals
@@ -44,8 +45,7 @@ def _move_20percents_files():
     train_dir = os.path.join(base_dir, 'train')
     validation_dir = os.path.join(base_dir, 'validation')
 
-    # Classes d'animaux
-    animals = read_animal_list("animals.txt")
+    animals = read_animal_list()
 
     # Déplacer 20% des images de chaque classe
     for animal_class in animals:

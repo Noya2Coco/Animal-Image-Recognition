@@ -9,9 +9,8 @@ from bs4 import BeautifulSoup
 import os
 import requests
 from urllib.parse import urljoin
-
-# Définir une taille minimale pour les images afin d'éviter les icônes
-MIN_IMAGE_SIZE_THRESHOLD = 5000  # 5 KB
+import config
+from file_utils import read_animal_list
 
 def save_base64_image(base64_data, filename):
     img_data = base64.b64decode(base64_data)
@@ -19,8 +18,7 @@ def save_base64_image(base64_data, filename):
         img_file.write(img_data)
 
 def scrape_images(query, max_images, save_dir):
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
+    os.makedirs(save_dir, exist_ok=True)
 
     # Configure les options du navigateur pour le mode headless
     chrome_options = Options()
@@ -33,7 +31,7 @@ def scrape_images(query, max_images, save_dir):
     chrome_options.add_argument("--incognito")
 
     url = f"https://www.google.com/search?q={query} animal&tbm=isch"
-    # test with 'photography'
+    # test with 'photography', 'photo'
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
 
@@ -71,7 +69,7 @@ def scrape_images(query, max_images, save_dir):
     img_count = 0
     for i, img in enumerate(images):
         # Sauter la première image qui est souvent le logo de Google
-        if i == 0 or i == 1 or i == 2:
+        if i == 0 or i == 1 or i == 2: # Code à améliorer
             continue
 
         img_src = img.get('src')
@@ -87,7 +85,7 @@ def scrape_images(query, max_images, save_dir):
                 # Décoder les données base64
                 img_data = base64.b64decode(base64_data)
                 # Vérifier la taille de l'image pour exclure les icônes potentielles
-                if len(img_data) >= MIN_IMAGE_SIZE_THRESHOLD:
+                if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
                     # Enregistrer l'image
                     filename = os.path.join(save_dir, f"{query}_{img_count}.{img_type}")
                     with open(filename, 'wb') as img_file:
@@ -103,7 +101,7 @@ def scrape_images(query, max_images, save_dir):
                 if response.status_code == 200:
                     img_data = response.content
                     # Vérifier la taille de l'image pour exclure les icônes potentielles
-                    if len(img_data) >= MIN_IMAGE_SIZE_THRESHOLD:
+                    if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
                         # Enregistrer l'image
                         filename = os.path.join(save_dir, f"{query}_{img_count}.jpg")  # Vous pouvez toujours définir l'extension de fichier comme jpg
                         with open(filename, 'wb') as img_file:
@@ -114,10 +112,8 @@ def scrape_images(query, max_images, save_dir):
 
     driver.quit()
 
-def scrape_images_for_all_animals(file_path, max_images, base_save_dir):
-    with open(file_path, 'r') as file:
-        animals = file.readlines()
-        animals = [animal.strip() for animal in animals]  # Enlever les espaces et les retours à la ligne
+def scrape_images_for_all_animals(max_images, base_save_dir):
+    animals = read_animal_list()
 
     for animal in animals:
         print(f"Scraping images for {animal}...")
@@ -126,4 +122,4 @@ def scrape_images_for_all_animals(file_path, max_images, base_save_dir):
         print(f"Finished scraping images for {animal}")
 
 # Exemple d'utilisation
-scrape_images_for_all_animals('animals.txt', 1, 'animals_prediction')
+scrape_images_for_all_animals(1, 'animals_prediction')

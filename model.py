@@ -1,20 +1,18 @@
-"""
-prepare
-"""
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+import config
 
 # Répertoires contenant les images d'entraînement et de validation
-train_dir = 'animals_v02/train'
-validation_dir = 'animals_v02/validation'
+train_dir = f"animals_{config.VERSION}/train"
+validation_dir = f"animals_{config.VERSION}/validation"
 
 # Paramètres pour l'entraînement et la validation
-batch_size = 16
-num_classes = 90  # Nombre total d'animaux
-num_train_images_per_class = 200
-num_validation_images_per_class = 50
+batch_size = config.BATCH_SIZE
+num_classes = config.NUM_ANIMALS
+num_train_images_per_class = config.TRAIN_IMAGES_PER_ANIMALS
+num_validation_images_per_class = config.VALIDATION_IMAGES_PER_ANIMALS
 
 # Calcul du nombre d'étapes par epoch et de la validation_steps
 steps_per_epoch = (num_train_images_per_class * num_classes) // batch_size
@@ -105,7 +103,7 @@ history = model.fit(
 )
 
 # Enregistrer le modèle
-model.save('v03.keras')
+model.save(f"./animal_images_recognotion_models/{config.VERSION}.keras")
 
 """
 evaluation
