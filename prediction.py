@@ -53,7 +53,7 @@ def predict_all_images():
 
         for file in files:
             image_path = os.path.join(root_folder, file)
-            prediction = predict_image(image_path, model, animals, top_k=90)
+            prediction = predict_image(image_path, model, animals, top_k=config.NUM_ANIMALS)
 
             animal_score, animal_ranking = get_animal_score_and_ranking(prediction, animal_name)
             animal_prediction = {}
@@ -67,11 +67,11 @@ def predict_all_images():
                 scores_percentage.append(0)
 
             if animal_ranking:
-                animal_prediction["ranking"] = f"{animal_ranking}/90"
+                animal_prediction["ranking"] = f"{animal_ranking}/{config.NUM_ANIMALS}"
                 rankings.append(animal_ranking)
             else:
                 animal_prediction["ranking"] = None
-                rankings.append(90)
+                rankings.append(config.NUM_ANIMALS)
 
             if animal_ranking > 1:
                 best_animal, best_score = prediction[0]
@@ -107,11 +107,11 @@ def calculate_statistics(scores, ranks, differences):
         avg_score = min_score = max_score = None
 
     if ranks:
-        avg_rank = f"{round(sum(ranks) / len(ranks), 2)}/90"
-        min_rank = f"{min(ranks)}/90"
-        max_rank = f"{max(ranks)}/90"
+        avg_rank = f"{round(sum(ranks) / len(ranks), 2)}/{config.NUM_ANIMALS}"
+        min_rank = f"{min(ranks)}/{config.NUM_ANIMALS}"
+        max_rank = f"{max(ranks)}/{config.NUM_ANIMALS}"
     else:
-        avg_rank = min_rank = max_rank = "0/90"
+        avg_rank = min_rank = max_rank = f"0/{config.NUM_ANIMALS}"
 
     if differences:
         avg_difference = f"+{round(sum(differences) / len(differences), 2)}%"

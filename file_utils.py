@@ -10,7 +10,7 @@ def read_animal_list(file_path=config.ANIMALS_NAMES_PATH):
     return animals
 
 
-def check_image_quota(base_dir, num_files):
+def check_folders_image_quota(base_dir, num_files):
     folders_with_less_than_num_images = []
     folders = os.listdir(base_dir)
 
@@ -23,10 +23,23 @@ def check_image_quota(base_dir, num_files):
             if num_images != num_files:
                 folders_with_less_than_num_images.append(folder)
 
-    if len(folders_with_less_than_num_images):
+    if folders_with_less_than_num_images:
         return folders_with_less_than_num_images
 
     return None
+
+
+print(check_folders_image_quota("animals_prediction_v0.2", 10))
+
+
+def check_folder_image_quota(base_dir, num_files):
+    if os.path.isdir(base_dir):
+        # How many images in the folder
+        num_images = len(os.listdir(base_dir))
+        if num_images == num_files:
+            return True
+
+    return False
 
 
 def move_files(src_dir, dest_dir, percentage):

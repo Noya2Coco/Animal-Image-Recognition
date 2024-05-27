@@ -1,3 +1,5 @@
+import os
+import requests
 import time
 import base64
 from selenium import webdriver
@@ -6,11 +8,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-import os
-import requests
 from urllib.parse import urljoin
 import config
-from file_utils import read_animal_list
+from file_utils import read_animal_list, check_folder_image_quota
 
 
 def save_base64_image(base64_data, filename):
@@ -19,7 +19,7 @@ def save_base64_image(base64_data, filename):
         img_file.write(img_data)
 
 
-def scrape_images(query, max_images, save_dir):
+def scrape_images(animal, max_images, save_dir):
     os.makedirs(save_dir, exist_ok=True)
 
     # Configure les options du navigateur pour le mode headless
@@ -32,7 +32,7 @@ def scrape_images(query, max_images, save_dir):
     chrome_options.add_argument("--disable-popup-blocking")
     chrome_options.add_argument("--incognito")
 
-    url = f"https://www.google.com/search?q={query} animal&tbm=isch"
+    url = f"https://www.google.com/search?q={animal} animal&tbm=isch"
     # test with 'photography', 'photo'
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
@@ -44,8 +44,10 @@ def scrape_images(query, max_images, save_dir):
         ).click()
         print("Clicked on the accept button")
     except Exception as e:
-        #print(f"No accept button found or error: {e}")
-        pass
+        # print(f"No accept button found or error: {e}")
+        print(f"[Reload] Scraping images for {animal}...")
+        scrape_images(animal, max_images, save_dir)
+        return
 
     time.sleep(2)  # Attendre un peu que la page se charge après avoir accepté
 
@@ -66,7 +68,7 @@ def scrape_images(query, max_images, save_dir):
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     images = soup.find_all('img')
 
-    print(f"Nombre total d'images trouvées : {len(images)}")
+    print(f"Number of images found : {len(images)}")
 
     img_count = 0
     for i, img in enumerate(images):
@@ -89,7 +91,7 @@ def scrape_images(query, max_images, save_dir):
                 # Vérifier la taille de l'image pour exclure les icônes potentielles
                 if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
                     # Enregistrer l'image
-                    filename = os.path.join(save_dir, f"{query}_{img_count}.{img_type}")
+                    filename = os.path.join(save_dir, f"{animal}_{img_count}.{img_type}")
                     with open(filename, 'wb') as img_file:
                         img_file.write(img_data)
                     img_count += 1
@@ -106,12 +108,15 @@ def scrape_images(query, max_images, save_dir):
                     if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
                         # Enregistrer l'image
                         filename = os.path.join(save_dir,
-                                                f"{query}_{img_count}.jpg")  # Vous pouvez toujours définir l'extension de fichier comme jpg
+                                                f"{animal}_{img_count}.jpg")
                         with open(filename, 'wb') as img_file:
                             img_file.write(img_data)
                         img_count += 1
                         if img_count >= max_images:
                             break
+
+    #if not check_folder_image_quota(save_dir, max_images):
+        #scrape_images(animal, max_images, save_dir)
 
     driver.quit()
 
@@ -119,12 +124,11 @@ def scrape_images(query, max_images, save_dir):
 def scrape_images_for_all_animals(max_images, base_save_dir):
     animals = read_animal_list()
 
-    for animal in animals:
-        print(f"Scraping images for {animal}...")
+    for i, animal in enumerate(animals, start=1):
+        print(f"\n==========================\nScraping images for {animal}... ({i}/{config.NUM_ANIMALS})")
         save_dir = os.path.join(base_save_dir, animal)
         scrape_images(animal, max_images, save_dir)
         print(f"Finished scraping images for {animal}")
 
 
-# Exemple d'utilisation
-scrape_images_for_all_animals(1, 'animals_prediction')
+scrape_images_for_all_animals(10, 'animals_prediction_v0.2')
