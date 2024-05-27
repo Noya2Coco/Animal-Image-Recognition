@@ -8,10 +8,11 @@ import config
 
 # Load the saved model
 model = tf.keras.models.load_model(f"./animal_classifier_models/{config.VERSION}.keras")
-#model = tf.keras.models.load_model('animal_classifier_models/v0.3.h5')
-#model = tf.keras.models.load_model('animal_classifier_models/v0.1.h5')
+# model = tf.keras.models.load_model('animal_classifier_models/v0.3.h5')
+# model = tf.keras.models.load_model('animal_classifier_models/v0.1.h5')
 
 animals = read_animal_list()
+
 
 def predict_image(img_path, model, classes, top_k=5):
     # Charger l'image
@@ -21,13 +22,14 @@ def predict_image(img_path, model, classes, top_k=5):
     img_tensor /= 255.
 
     # Faire la prédiction
-    predictions = model.predict(img_tensor)[0]  # Récupérer les prédictions
-    top_indices = np.argsort(predictions)[::-1][:top_k]  # Indices des top_k prédictions
-    
+    ranked_predictions = model.predict(img_tensor)[0]  # Récupérer les prédictions
+    top_indices = np.argsort(ranked_predictions)[::-1][:top_k]  # Indices des top_k prédictions
+
     # Créer le classement des animaux les plus probables
-    ranked_classes = [(classes[i], predictions[i]) for i in top_indices]
-    
+    ranked_classes = [(classes[i], ranked_predictions[i]) for i in top_indices]
+
     return ranked_classes
+
 
 def get_animal_score_and_ranking(prediction, chosen_animal):
     for ranking, (animal, score) in enumerate(prediction, start=1):
@@ -35,9 +37,10 @@ def get_animal_score_and_ranking(prediction, chosen_animal):
             return float(score), ranking
     return None, None
 
+
 def predict_all_images():
     animals_predictions = {}
-    root_path = config.PREDICTION_PATH
+    root_path = config.PREDICTION_IMAGES_PATH
 
     for root_folder, subfolders, files in os.walk(root_path):
         animal_name = os.path.basename(root_folder)
@@ -55,7 +58,7 @@ def predict_all_images():
             animal_score, animal_ranking = get_animal_score_and_ranking(prediction, animal_name)
             animal_prediction = {}
 
-            if animal_score is not None:
+            if animal_score:
                 score_percentage = round(animal_score * 100, 2)
                 animal_prediction["score_percentage"] = f"{score_percentage}%"
                 scores_percentage.append(score_percentage)
@@ -63,18 +66,19 @@ def predict_all_images():
                 animal_prediction["score_percentage"] = None
                 scores_percentage.append(0)
 
-            if animal_ranking is not None:
+            if animal_ranking:
                 animal_prediction["ranking"] = f"{animal_ranking}/90"
                 rankings.append(animal_ranking)
             else:
                 animal_prediction["ranking"] = None
                 rankings.append(90)
 
-            if animal_ranking != 1:
+            if animal_ranking > 1:
                 best_animal, best_score = prediction[0]
                 difference_best_score_percentage = round((best_score - animal_score) * 100, 2)
                 animal_prediction["best_animal"] = best_animal
-                animal_prediction["best_score_percentage"] = f"{round(best_score * 100, 2)}% (+{difference_best_score_percentage}%)"
+                animal_prediction[
+                    "best_score_percentage"] = f"{round(best_score * 100, 2)}% (+{difference_best_score_percentage}%)"
                 best_score_differences.append(difference_best_score_percentage)
             else:
                 animal_prediction["best_animal"] = None
@@ -92,6 +96,7 @@ def predict_all_images():
             animals_predictions[animal_name] = stats
 
     return animals_predictions
+
 
 def calculate_statistics(scores, ranks, differences):
     if scores:
@@ -119,15 +124,16 @@ def calculate_statistics(scores, ranks, differences):
         "average_scores_percentage": avg_score,
         "min_score_percentage": min_score,
         "max_score_percentage": max_score,
-        
+
         "average_rankings": avg_rank,
         "min_ranking": min_rank,
         "max_ranking": max_rank,
-        
+
         "average_difference_with_best_scores": avg_difference,
         "min_difference_with_best_scores": min_difference,
         "max_difference_with_best_scores": max_difference,
     }
+
 
 predictions = predict_all_images()
 print(json.dumps(predictions, indent=4))

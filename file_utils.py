@@ -3,10 +3,12 @@ import shutil
 import random
 import config
 
+
 def read_animal_list(file_path=config.ANIMALS_NAMES_PATH):
     with open(file_path, 'r') as file:
         animals = [line.strip() for line in file.readlines()]
     return animals
+
 
 def check_image_quota(base_dir, num_files):
     folders_with_less_than_num_images = []
@@ -23,17 +25,18 @@ def check_image_quota(base_dir, num_files):
 
     if len(folders_with_less_than_num_images):
         return folders_with_less_than_num_images
-    
+
     return None
+
 
 def move_files(src_dir, dest_dir, percentage):
     os.makedirs(dest_dir, exist_ok=True)
     files = os.listdir(src_dir)
-    
+
     # Randomly select a percentage of files
     num_files_to_move = int(len(files) * percentage)
     files_to_move = random.sample(files, num_files_to_move)
-    
+
     # Move selected files
     for file in files_to_move:
         shutil.move(os.path.join(src_dir, file), os.path.join(dest_dir, file))

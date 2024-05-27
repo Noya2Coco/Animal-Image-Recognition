@@ -4,6 +4,7 @@ DEBUG = True
 # AI
 BATCH_SIZE = 16
 VERSION = "v0.3"
+ANIMALS_DB_VERSION = "v0.2"
 ANIMALS_NAMES_PATH = "./animals.txt"
 ANIMALS_IMAGES_PATH = "./animals_v02"
 PREDICTION_IMAGES_PATH = "./animals_prediction"

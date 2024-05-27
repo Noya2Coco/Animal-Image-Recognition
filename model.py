@@ -2,11 +2,12 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+import matplotlib.pyplot as plt
 import config
 
 # Répertoires contenant les images d'entraînement et de validation
-train_dir = f"animals_{config.VERSION}/train"
-validation_dir = f"animals_{config.VERSION}/validation"
+train_dir = f"animals_{config.ANIMALS_DB_VERSION}/train"
+validation_dir = f"animals_{config.ANIMALS_DB_VERSION}/validation"
 
 # Paramètres pour l'entraînement et la validation
 batch_size = config.BATCH_SIZE
@@ -20,7 +21,7 @@ validation_steps = (num_validation_images_per_class * num_classes) // batch_size
 
 # Générer les données avec augmentation
 train_datagen = ImageDataGenerator(
-    rescale=1./255,
+    rescale=1. / 255,
     rotation_range=40,
     width_shift_range=0.2,
     height_shift_range=0.2,
@@ -29,7 +30,7 @@ train_datagen = ImageDataGenerator(
     horizontal_flip=True,
     fill_mode='nearest')
 
-validation_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
 # Génération des flux de données pour l'entraînement et la validation
 train_generator = train_datagen.flow_from_directory(
@@ -64,17 +65,20 @@ model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
+
 # Fonction génératrice pour train
 def train_gen():
     while True:
         x, y = next(train_generator)
         yield x, y
 
+
 # Fonction génératrice pour validation
 def val_gen():
     while True:
         x, y = next(validation_generator)
         yield x, y
+
 
 # Création des datasets
 train_ds = tf.data.Dataset.from_generator(
@@ -95,11 +99,11 @@ validation_ds = validation_ds.repeat()
 
 # Entraînement du modèle avec les objets tf.data.Dataset
 history = model.fit(
-  train_ds,
-  steps_per_epoch=steps_per_epoch,
-  epochs=30,
-  validation_data=validation_ds,
-  validation_steps=validation_steps
+    train_ds,
+    steps_per_epoch=steps_per_epoch,
+    epochs=30,
+    validation_data=validation_ds,
+    validation_steps=validation_steps
 )
 
 # Enregistrer le modèle
@@ -108,7 +112,6 @@ model.save(f"./animal_images_recognotion_models/{config.VERSION}.keras")
 """
 evaluation
 """
-import matplotlib.pyplot as plt
 
 # Afficher les courbes de précision et de perte
 acc = history.history['accuracy']

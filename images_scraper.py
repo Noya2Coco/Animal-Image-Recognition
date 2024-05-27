@@ -12,10 +12,12 @@ from urllib.parse import urljoin
 import config
 from file_utils import read_animal_list
 
+
 def save_base64_image(base64_data, filename):
     img_data = base64.b64decode(base64_data)
     with open(filename, 'wb') as img_file:
         img_file.write(img_data)
+
 
 def scrape_images(query, max_images, save_dir):
     os.makedirs(save_dir, exist_ok=True)
@@ -69,7 +71,7 @@ def scrape_images(query, max_images, save_dir):
     img_count = 0
     for i, img in enumerate(images):
         # Sauter la première image qui est souvent le logo de Google
-        if i == 0 or i == 1 or i == 2: # Code à améliorer
+        if i == 0 or i == 1 or i == 2:  # Code à améliorer
             continue
 
         img_src = img.get('src')
@@ -103,7 +105,8 @@ def scrape_images(query, max_images, save_dir):
                     # Vérifier la taille de l'image pour exclure les icônes potentielles
                     if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
                         # Enregistrer l'image
-                        filename = os.path.join(save_dir, f"{query}_{img_count}.jpg")  # Vous pouvez toujours définir l'extension de fichier comme jpg
+                        filename = os.path.join(save_dir,
+                                                f"{query}_{img_count}.jpg")  # Vous pouvez toujours définir l'extension de fichier comme jpg
                         with open(filename, 'wb') as img_file:
                             img_file.write(img_data)
                         img_count += 1
@@ -111,6 +114,7 @@ def scrape_images(query, max_images, save_dir):
                             break
 
     driver.quit()
+
 
 def scrape_images_for_all_animals(max_images, base_save_dir):
     animals = read_animal_list()
@@ -120,6 +124,7 @@ def scrape_images_for_all_animals(max_images, base_save_dir):
         save_dir = os.path.join(base_save_dir, animal)
         scrape_images(animal, max_images, save_dir)
         print(f"Finished scraping images for {animal}")
+
 
 # Exemple d'utilisation
 scrape_images_for_all_animals(1, 'animals_prediction')
