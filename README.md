@@ -17,7 +17,7 @@
 
 ## Documentation
 
-- **./animal_images_recognition_models/** : versions of the AI
+- **./models/** : versions of the AI
 - **./data/** : statistical version tracking
 - **./animal.txt** : list of animals
 - ...
