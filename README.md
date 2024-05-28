@@ -1,4 +1,5 @@
 # Animal Image Recognition with AI
+> *A machine learning process utilizing supervised learning and discriminative techniques to recognize animals in images*
 
 ## Versions
 

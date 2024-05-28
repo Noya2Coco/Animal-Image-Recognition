@@ -29,7 +29,7 @@ def check_folders_image_quota(base_dir, num_files):
     return None
 
 
-print(check_folders_image_quota("animals_prediction_v0.2", 10))
+# print(check_folders_image_quota("animals_prediction_v0.2", 10))
 
 
 def check_folder_image_quota(base_dir, num_files):
