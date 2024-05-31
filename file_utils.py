@@ -32,14 +32,13 @@ def check_folders_image_quota(base_dir, num_files):
 # print(check_folders_image_quota("animals_prediction_v0.2", 10))
 
 
-def check_folder_image_quota(base_dir, num_files):
+def get_folder_quota_remaining(base_dir, max_nb_files):
     if os.path.isdir(base_dir):
         # How many images in the folder
-        num_images = len(os.listdir(base_dir))
-        if num_images == num_files:
-            return True
-
-    return False
+        nb_files = len(os.listdir(base_dir))
+        return max_nb_files - nb_files
+    
+    return 0
 
 
 def move_files(src_dir, dest_dir, percentage):
