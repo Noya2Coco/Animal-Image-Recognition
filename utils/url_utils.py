@@ -52,8 +52,12 @@ def save_url_filename_mapping(file_path, entity_name, mapping):
         entity_name (str): Name of the entity.
         mapping (dict): URL-Filename mapping to be saved.
     """
+    # Load the existing URL-Filename mapping from the JSON file
     existing_mapping = load_url_filename_mapping(file_path)
+    
+    # Update the existing mapping with the new mapping for the specified entity
     existing_mapping[entity_name] = mapping
     
     with open(file_path, 'w') as file:
+        # Save the updated mapping to the file with indentation for readability
         json.dump(existing_mapping, file, indent=4)

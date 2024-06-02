@@ -11,9 +11,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 import config
-from file_utils import adjust_max_files, delete_last_files, get_next_filename
-from image_utils import is_valid_image
-from url_utils import hash_url, load_url_filename_mapping, save_url_filename_mapping
+from utils.file_utils import adjust_max_files, delete_last_files, get_next_filename
+from utils.image_utils import is_valid_image
+from utils.url_utils import hash_url, load_url_filename_mapping, save_url_filename_mapping
 
 
 def setup_chrome_options():
@@ -167,6 +167,8 @@ def scrape_images(query, max_images, save_dir):
     driver = webdriver.Chrome(options=chrome_options)
 
     url = f"https://www.google.com/search?q={query}&tbm=isch"
+    # url = f"https://www.google.com/search?q={query} animal&tbm=isch"
+    # url = f"https://www.google.com/search?q={query} photography&tbm=isch"
     driver.get(url)
 
     handle_accept_button(driver)

@@ -1,10 +1,13 @@
 import json
+import os
+import pandas as pd
 import tensorflow as tf
-from file_utils import get_entity_list
+from graphics import make_bar_plot_avg_difference_best_scores, make_bar_plot_avg_scores, make_box_plot_avg_rankings, make_box_plot_avg_score_percentage, transform_format_data
+from utils.file_utils import get_entity_list, move_files
 from image_scraper import scrape_images
 
 import config
-from prediction import predict_all_images
+from evaluate_model import predictions_all_entities
 
 
 def _scrape_images_for_all_animals(max_images, save_dir):
@@ -22,10 +25,40 @@ def _prediction_for_all_folders():
     # model = tf.keras.models.load_model('animal_classifier_models/v0.3.h5')
     # model = tf.keras.models.load_model('animal_classifier_models/v0.1.h5')
 
-    predictions = predict_all_images(model)
+    predictions = predictions_all_entities(model)
     print(json.dumps(predictions, indent=4))
+    
+    
+def _move_20percents_files():
+    # Chemins des répertoires
+    base_dir = 'animals_v02'
+    train_dir = os.path.join(base_dir, 'train')
+    validation_dir = os.path.join(base_dir, 'validation')
+
+    animals = get_entity_list()
+
+    # Déplacer 20% des images de chaque classe
+    for animal_class in animals:
+        src_dir = os.path.join(train_dir, animal_class)
+        dest_dir = os.path.join(validation_dir, animal_class)
+        move_files(src_dir, dest_dir, 0.20)
+
+
+def _make_evaluation_graphics():
+    model = tf.keras.models.load_model(f"./models/{config.VERSION}.keras")
+    predictions = predictions_all_entities(model)
+    entities_data = transform_format_data(predictions)
+    data = pd.DataFrame(entities_data)
+    
+    make_bar_plot_avg_scores(data)
+    make_bar_plot_avg_difference_best_scores(data)
+    make_box_plot_avg_score_percentage(data)
+    make_box_plot_avg_rankings(data)
+
 
 if __name__ == "__main__":
     # _scrape_images_for_all_animals(3, 'tests')
     # _prediction_for_all_folders()
+    # _move_20percents_files()
+    _make_evaluation_graphics()
     pass

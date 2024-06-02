@@ -5,7 +5,7 @@ import random
 import glob
 
 import config
-from url_utils import load_url_filename_mapping, save_url_filename_mapping
+from utils.url_utils import load_url_filename_mapping, save_url_filename_mapping
 
 
 def get_entity_list(file_path=config.ANIMALS_NAMES_PATH):
@@ -49,17 +49,22 @@ def check_folders_image_quota(base_dir, num_files):
     Returns:
         list: Folders with less than the specified number of images, or None if all folders meet the quota.
     """
+    # List to store the names of folders that do not meet the image quota
     folders_with_less_than_num_images = []
+    
     folders = os.listdir(base_dir)
 
     for folder in folders:
         folder_path = os.path.join(base_dir, folder)
 
+        # Check if the current item is a directory
         if os.path.isdir(folder_path):
             num_images = count_files_in_directory(folder_path)
+            
             if num_images != num_files:
                 folders_with_less_than_num_images.append(folder)
 
+    # Return the list of folders if any do not meet the quota, otherwise return None
     return folders_with_less_than_num_images if folders_with_less_than_num_images else None
 
 
@@ -105,7 +110,6 @@ def get_next_filename(base_dir, query, ext):
     Returns:
         str: The next filename.
     """
-    # Get list of existing files in the directory
     existing_files = os.listdir(base_dir)
     
     # Define regex pattern to match filenames
@@ -117,7 +121,6 @@ def get_next_filename(base_dir, query, ext):
     # Determine the next number in the sequence
     next_number = 0 if not existing_numbers else existing_numbers[0] + 1
     
-    # Construct and return the next filename
     return f"{base_dir}/{query}_{next_number}.{ext}"
 
 
@@ -134,7 +137,6 @@ def delete_last_files(directory, query, max_files, url_filename_mapping_file):
     if max_files <= 0:
         return
     
-    # List all files in the directory
     files = glob.glob(os.path.join(directory, '*'))
     
     # Sort files by modification date (oldest to newest)
@@ -180,18 +182,3 @@ def move_files(src_dir, dest_dir, percentage):
     # Move the selected files
     for file in files_to_move:
         shutil.move(os.path.join(src_dir, file), os.path.join(dest_dir, file))
-
-
-def _move_20percents_files():
-    # Chemins des répertoires
-    base_dir = 'animals_v02'
-    train_dir = os.path.join(base_dir, 'train')
-    validation_dir = os.path.join(base_dir, 'validation')
-
-    animals = get_entity_list()
-
-    # Déplacer 20% des images de chaque classe
-    for animal_class in animals:
-        src_dir = os.path.join(train_dir, animal_class)
-        dest_dir = os.path.join(validation_dir, animal_class)
-        move_files(src_dir, dest_dir, 0.20)
