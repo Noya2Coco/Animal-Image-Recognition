@@ -3,6 +3,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator # type: igno
 from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense # type: ignore
 import matplotlib.pyplot as plt
+
 import config
 
 # Répertoires contenant les images d'entraînement et de validation

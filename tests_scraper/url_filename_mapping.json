@@ -1,0 +1,27 @@
+{
+    "antelope": {
+        "2da901c07df7317a479430d2b3aa9189": "antelope_0.jpeg",
+        "5e1051f5ce01e09ce515771155ee7417": "antelope_1.jpeg",
+        "17dcccd0b4d0b38f62e11401e83e1e84": "antelope_2.jpeg"
+    },
+    "badger": {
+        "e8310c2eb7a3e0ecb141fc2b5492d7f5": "badger_0.jpeg",
+        "ad45b0eb4c4bd8e129f2c9ad8d65f0aa": "badger_1.jpeg",
+        "9c0efe9827a8e06bf279e3629e1c782d": "badger_2.jpeg"
+    },
+    "bat": {
+        "25010e38084684ff2875a4790f0ec9e0": "bat_0.jpeg",
+        "594a4c8f78190421d4749f7debd9d912": "bat_1.jpeg",
+        "73f46d4c607aa732cec84445a3f196b4": "bat_2.jpeg"
+    },
+    "bear": {
+        "8df016491f68475bf6d54f1fb6ba07b2": "bear_0.jpeg",
+        "dfeda26785219a14b185e18f1143aaa3": "bear_1.jpeg",
+        "0c304df48f93a2e9fea498e5260caccf": "bear_2.jpeg"
+    },
+    "bee": {
+        "ca60a18d6fee0700f0f6d7305ae6262c": "bee_0.jpeg",
+        "720d54ae938f17714687cb0cfd85245e": "bee_1.jpeg",
+        "61b9d2f79e5938b5aab73a81949cf388": "bee_2.jpeg"
+    }
+}

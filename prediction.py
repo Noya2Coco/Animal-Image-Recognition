@@ -1,17 +1,10 @@
 import os
-import json
 import tensorflow as tf
-from tensorflow.keras.preprocessing import image
+from tensorflow.keras.preprocessing import image # type: ignore
 import numpy as np
-from file_utils import read_animal_list
+
 import config
-
-# Load the saved model
-model = tf.keras.models.load_model(f"./animal_classifier_models/{config.VERSION}.keras")
-# model = tf.keras.models.load_model('animal_classifier_models/v0.3.h5')
-# model = tf.keras.models.load_model('animal_classifier_models/v0.1.h5')
-
-animals = read_animal_list()
+from file_utils import get_entity_list
 
 
 def predict_image(img_path, model, classes, top_k=5):
@@ -38,7 +31,7 @@ def get_animal_score_and_ranking(prediction, chosen_animal):
     return None, None
 
 
-def predict_all_images():
+def predict_all_images(model):
     animals_predictions = {}
     root_path = config.PREDICTION_IMAGES_PATH
 
@@ -53,7 +46,7 @@ def predict_all_images():
 
         for file in files:
             image_path = os.path.join(root_folder, file)
-            prediction = predict_image(image_path, model, animals, top_k=config.NUM_ANIMALS)
+            prediction = predict_image(image_path, model, get_entity_list(), top_k=config.NUM_ANIMALS)
 
             animal_score, animal_ranking = get_animal_score_and_ranking(prediction, animal_name)
             animal_prediction = {}
@@ -101,17 +94,17 @@ def predict_all_images():
 def calculate_statistics(scores, ranks, differences):
     if scores:
         avg_score = f"{round(sum(scores) / len(scores), 2)}%"
-        min_score = f"{min(scores)}%"
-        max_score = f"{max(scores)}%"
+        best_score = f"{min(scores)}%"
+        worst_score = f"{max(scores)}%"
     else:
-        avg_score = min_score = max_score = None
+        avg_score = best_score = worst_score = None
 
     if ranks:
         avg_rank = f"{round(sum(ranks) / len(ranks), 2)}/{config.NUM_ANIMALS}"
-        min_rank = f"{min(ranks)}/{config.NUM_ANIMALS}"
-        max_rank = f"{max(ranks)}/{config.NUM_ANIMALS}"
+        best_rank = f"{min(ranks)}/{config.NUM_ANIMALS}"
+        worst_rank = f"{max(ranks)}/{config.NUM_ANIMALS}"
     else:
-        avg_rank = min_rank = max_rank = f"0/{config.NUM_ANIMALS}"
+        avg_rank = best_rank = worst_rank = f"0/{config.NUM_ANIMALS}"
 
     if differences:
         avg_difference = f"+{round(sum(differences) / len(differences), 2)}%"
@@ -122,12 +115,12 @@ def calculate_statistics(scores, ranks, differences):
 
     return {
         "average_scores_percentage": avg_score,
-        "min_score_percentage": min_score,
-        "max_score_percentage": max_score,
+        "best_score_percentage": best_score,
+        "worst_score_percentage": worst_score,
 
         "average_rankings": avg_rank,
-        "min_ranking": min_rank,
-        "max_ranking": max_rank,
+        "best_ranking": best_rank,
+        "worst_ranking": worst_rank,
 
         "average_difference_with_best_scores": avg_difference,
         "min_difference_with_best_scores": min_difference,
@@ -135,5 +128,3 @@ def calculate_statistics(scores, ranks, differences):
     }
 
 
-predictions = predict_all_images()
-print(json.dumps(predictions, indent=4))
