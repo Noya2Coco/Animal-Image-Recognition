@@ -47,13 +47,15 @@ def _move_20percents_files():
 def _make_evaluation_graphics():
     model = tf.keras.models.load_model(f"./models/{config.VERSION}.keras")
     predictions = predictions_all_entities(model)
-    entities_data = transform_format_data(predictions)
-    data = pd.DataFrame(entities_data)
+    print(predictions)
+    global_data, individual_data = transform_format_data(predictions)
+    global_df = pd.DataFrame(global_data)
+    individual_df = pd.DataFrame(individual_data)
     
-    make_bar_plot_avg_scores(data)
-    make_bar_plot_avg_difference_best_scores(data)
-    make_box_plot_avg_score_percentage(data)
-    make_box_plot_avg_rankings(data)
+    make_bar_plot_avg_scores(global_df)
+    make_bar_plot_avg_difference_best_scores(global_df)
+    make_box_plot_avg_score_percentage(individual_df)
+    make_box_plot_avg_rankings(individual_df)
 
 
 if __name__ == "__main__":

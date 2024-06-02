@@ -77,7 +77,7 @@ def prediction_image(img_path, model, classes, top_k=10):
     Args:
         img_path (str): Path to the image file.
         model (tf.keras.Model): Trained model for prediction.
-        classes (list): List of class names.
+        classes (list): List of class names. 
         top_k (int, optional): Number of top predictions to return. Defaults to 5.
 
     Returns:
@@ -115,6 +115,10 @@ def predictions_all_entities(model):
     root_path = config.PREDICTION_IMAGES_PATH
 
     for root_folder, _, files in os.walk(root_path):
+        # Skip the parent folder itself
+        if root_folder == root_path:
+            continue
+        
         entity_name = os.path.basename(root_folder)
         
         # Dictionary to store predictions for the current entity
@@ -170,11 +174,10 @@ def predictions_all_entities(model):
             # Add the prediction information to the entity predictions dictionary
             entity_predictions[file] = prediction_info
 
-        if entity_name != root_path:
-            # Calculate and add statistics for the current entity
-            stats = calculate_statistics(scores, ranks, score_diffs)
-            stats.update(entity_predictions)
-            predictions[entity_name] = stats
+        # Calculate and add statistics for the current entity
+        stats = calculate_statistics(scores, ranks, score_diffs)
+        stats.update(entity_predictions)
+        predictions[entity_name] = stats
 
     return predictions
 
