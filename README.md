@@ -1,4 +1,5 @@
-# Animal Image Recognition with AI
+# Image Recognition with AI
+> *A machine learning process utilizing supervised learning and discriminative techniques to recognize a living being, a landscape or any other thing in images*
 
 ## Versions
 
@@ -12,12 +13,21 @@
 - new extension : .keras
 
 ### <ins>v0.3</ins> (✔️) (26-05-2024)
-- images per animals : 200 for train, 50 for validation (some doubles and some bad images)
 - batch_size = 16
+
+### <ins>v0.4</ins> (✖️) (07-06-2024)
+- greatly improved code organization, readability, and documentation
+- transformation of the project to make it broader: moving from animals to entities
+- the scraper is functional from A to Z
 
 ## Documentation
 
 - **./models/** : versions of the AI
 - **./data/** : statistical version tracking
-- **./animal.txt** : list of animals
+- **./entities.txt** : the list of entities, such as an animal or an object
 - ...
+
+## Help
+
+✔️ : new existing model
+✖️ : no new model exists

@@ -1,4 +1,12 @@
+# .gitignore
+__pycache__/
 .vscode/
-animals_v01/
-animals_v02/
-animals_prediction/
+
+animals_v0.1/
+animals_v0.2/
+animals_v0.3/
+
+animals_prediction_v0.1/
+animals_prediction_v0.2/
+
+tests_scraper/
