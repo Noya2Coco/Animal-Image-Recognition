@@ -36,37 +36,40 @@ def calculate_statistics(scores, ranks, differences):
     Returns:
         dict: Dictionary containing calculated statistics.
     """
-    if scores:
-        avg_score = f"{round(sum(scores) / len(scores), 2)}%"
-        best_score = f"{min(scores)}%"
-        worst_score = f"{max(scores)}%"
+    if scores: 
+        # (3 vars in ...%)
+        avg_score = round(sum(scores) / len(scores), 2)
+        worst_score = min(scores)
+        best_score = max(scores)
     else:
         avg_score = best_score = worst_score = None
 
-    if ranks:
-        avg_rank = f"{round(sum(ranks) / len(ranks), 2)}/{config.NUM_ANIMALS}"
-        best_rank = f"{min(ranks)}/{config.NUM_ANIMALS}"
-        worst_rank = f"{max(ranks)}/{config.NUM_ANIMALS}"
+    if ranks: 
+        # (3 vars in .../config.NUM_ANIMALS)
+        avg_rank = round(sum(ranks) / len(ranks), 2)
+        best_rank = min(ranks)
+        worst_rank = max(ranks)
     else:
-        avg_rank = best_rank = worst_rank = f"0/{config.NUM_ANIMALS}"
+        avg_rank = best_rank = worst_rank = config.NUM_ANIMALS
 
-    if differences:
-        avg_difference = f"+{round(sum(differences) / len(differences), 2)}%"
-        min_difference = f"+{min(differences)}%"
-        max_difference = f"+{max(differences)}%"
+    if differences: 
+        # (3 vars in +...%)
+        avg_difference = round(sum(differences) / len(differences), 2)
+        min_difference = min(differences)
+        max_difference = max(differences)
     else:
-        avg_difference = min_difference = max_difference = "+0%"
+        avg_difference = min_difference = max_difference = None
 
     return {
-        "average_scores_percentage": avg_score,
-        "best_score_percentage": best_score,
-        "worst_score_percentage": worst_score,
-        "average_rankings": avg_rank,
-        "best_ranking": best_rank,
-        "worst_ranking": worst_rank,
-        "average_difference_with_best_scores": avg_difference,
-        "min_difference_with_best_scores": min_difference,
-        "max_difference_with_best_scores": max_difference,
+        "avg_score": avg_score,
+        "best_score": best_score,
+        "worst_score": worst_score,
+        "avg_rank": avg_rank,
+        "best_rank": best_rank,
+        "worst_rank": worst_rank,
+        "avg_diff_with_best_score": avg_difference,
+        "min_diff_with_best_score": min_difference,
+        "max_diff_with_best_score": max_difference,
     }
 
 
@@ -146,17 +149,17 @@ def predictions_all_entities(model):
             # Handle score and ranking information
             if score:
                 score_pct = round(score * 100, 2)
-                prediction_info["score_percentage"] = f"{score_pct}%"
+                prediction_info["score"] = score_pct
                 scores.append(score_pct)
             else:
-                prediction_info["score_percentage"] = None
+                prediction_info["score"] = 0
                 scores.append(0)
 
             if rank:
-                prediction_info["ranking"] = f"{rank}/{config.NUM_ANIMALS}"
+                prediction_info["rank"] = rank
                 ranks.append(rank)
             else:
-                prediction_info["ranking"] = None
+                prediction_info["rank"] = config.NUM_ANIMALS
                 ranks.append(config.NUM_ANIMALS)
 
             # Handle best entity and score difference information
@@ -164,11 +167,10 @@ def predictions_all_entities(model):
                 best_entity, best_score = prediction[0]
                 diff_best_score_pct = round((best_score - score) * 100, 2)
                 prediction_info["best_entity"] = best_entity
-                prediction_info["best_score_percentage"] = f"{round(best_score * 100, 2)}% (+{diff_best_score_pct}%)"
+                prediction_info["best_score"] = round(best_score * 100, 2)
+                prediction_info["diff_with_best_score"] = diff_best_score_pct
                 score_diffs.append(diff_best_score_pct)
             else:
-                prediction_info["best_entity"] = None
-                prediction_info["best_score_percentage"] = None
                 score_diffs.append(0)
 
             # Add the prediction information to the entity predictions dictionary

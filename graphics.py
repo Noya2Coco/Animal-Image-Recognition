@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import config
+
 
 def transform_format_data(data):
     global_data = []
@@ -9,15 +11,15 @@ def transform_format_data(data):
     for entity, details in data.items():
         global_record = {
             'animal': entity,
-            'average_scores_percentage': float(details['average_scores_percentage'].strip('%')) if details['average_scores_percentage'] is not None else 0.0,
-            'best_score_percentage': float(details['best_score_percentage'].strip('%')) if details['best_score_percentage'] is not None else 0.0,
-            'worst_score_percentage': float(details['worst_score_percentage'].strip('%')) if details['worst_score_percentage'] is not None else 0.0,
-            'average_rankings': float(details['average_rankings'].split('/')[0]) if details['average_rankings'] is not None else 0.0,
-            'best_ranking': int(details['best_ranking'].split('/')[0]) if details['best_ranking'] is not None else 0,
-            'worst_ranking': int(details['worst_ranking'].split('/')[0]) if details['worst_ranking'] is not None else 0,
-            'average_difference_with_best_scores': float(details['average_difference_with_best_scores'].strip('%+')) if details['average_difference_with_best_scores'] is not None else 0.0,
-            'min_difference_with_best_scores': float(details['min_difference_with_best_scores'].strip('%+')) if details['min_difference_with_best_scores'] is not None else 0.0,
-            'max_difference_with_best_scores': float(details['max_difference_with_best_scores'].strip('%+')) if details['max_difference_with_best_scores'] is not None else 0.0,
+            'avg_score': float(details['avg_score']) if details['avg_score'] is not None else 0.0,
+            'best_score': float(details['best_score']) if details['best_score'] is not None else 0.0,
+            'worst_score': float(details['worst_score']) if details['worst_score'] is not None else 0.0,
+            'avg_rank': float(details['avg_rank']) if details['avg_rank'] is not None else 0.0,
+            'best_rank': int(details['best_rank']) if details['best_rank'] is not None else 0,
+            'worst_rank': int(details['worst_rank']) if details['worst_rank'] is not None else 0,
+            'avg_diff_with_best_score': float(details['avg_diff_with_best_score']) if details['avg_diff_with_best_score'] is not None else 0.0,
+            'min_diff_with_best_score': float(details['min_diff_with_best_score']) if details['min_diff_with_best_score'] is not None else 0.0,
+            'max_diff_with_best_score': float(details['max_diff_with_best_score']) if details['max_diff_with_best_score'] is not None else 0.0,
         }
         global_data.append(global_record)
     
@@ -25,8 +27,8 @@ def transform_format_data(data):
             if key.endswith('.jpeg'):
                 individual_record = {
                     'animal': entity,
-                    'score_percentage': float(value['score_percentage'].strip('%')) if value['score_percentage'] is not None else 0.0,
-                    'ranking': int(value['ranking'].split('/')[0]) if value['ranking'] is not None else 0
+                    'score': float(value['score']) if value['score'] is not None else 0.0,
+                    'rank': int(value['rank']) if value['rank'] is not None else 0
                 }
                 individual_data.append(individual_record)
     
@@ -39,7 +41,7 @@ def make_bar_plot_avg_scores(global_df):
 
     # Bar plot for average scores
     plt.figure(figsize=(15, 8))
-    sns.barplot(x='animal', y='average_scores_percentage', data=global_df, palette=palette)
+    ax = sns.barplot(x='animal', y='avg_score', data=global_df, palette=palette)
     plt.title('Average Score Percentage by Animal')
     plt.xlabel('Animal')
     plt.ylabel('Average Score (%)')
@@ -52,18 +54,21 @@ def make_bar_plot_avg_scores(global_df):
     for y in range(int(ymin), int(ymax)+1, 10):
         plt.axhline(y=y, color='gray', linestyle='--', linewidth=0.5)
     
+    # Customize tick labels with the corresponding colors
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(global_df['animal'].unique()))]):
+        tick_label.set_color(color)
+    
     # Save the image
     plt.savefig('docs/models_performances/evaluations/average_score_barplot.png', bbox_inches='tight')
     plt.show()
-    
-    
+
 def make_bar_plot_avg_difference_best_scores(global_df):
     # Define a color palette with 5 colors
     palette = sns.color_palette("husl", 5)
     
     # Bar plot for average difference with best scores
     plt.figure(figsize=(15, 8))
-    sns.barplot(x='animal', y='average_difference_with_best_scores', data=global_df, palette=palette)
+    ax = sns.barplot(x='animal', y='avg_diff_with_best_score', data=global_df, palette=palette)
     plt.title('Average Difference with Best Scores by Animal')
     plt.xlabel('Animal')
     plt.ylabel('Average Difference with Best Scores (%)')
@@ -75,11 +80,14 @@ def make_bar_plot_avg_difference_best_scores(global_df):
     # Adding dashed lines every 10% within the current y-axis limits
     for y in range(int(ymin), int(ymax)+1, 10):
         plt.axhline(y=y, color='gray', linestyle='--', linewidth=0.5)
+
+    # Customize tick labels with the corresponding colors
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(global_df['animal'].unique()))]):
+        tick_label.set_color(color)
     
     # Save the image
-    plt.savefig('docs/models_performances/evaluations/average_difference_with_best_scores_barplot.png', bbox_inches='tight')
+    plt.savefig('docs/models_performances/evaluations/avg_difference_with_best_scores_barplot.png', bbox_inches='tight')
     plt.show()
-
 
 def make_box_plot_avg_score_percentage(individual_df):
     # Define a color palette with 5 colors
@@ -87,12 +95,16 @@ def make_box_plot_avg_score_percentage(individual_df):
     
     # Box plot for score percentages
     plt.figure(figsize=(15, 8))
-    sns.boxplot(x='animal', y='score_percentage', data=individual_df, palette=palette)
+    ax = sns.boxplot(x='animal', y='score', data=individual_df, palette=palette)
     plt.title('Score Percentage Distribution by Animal')
     plt.xlabel('Animal')
-    plt.ylabel('Score (%)')
+    plt.ylabel('Scores (%)')
     plt.xticks(rotation=90)
 
+    # Customize tick labels with the corresponding colors
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(individual_df['animal'].unique()))]):
+        tick_label.set_color(color)
+    
     # Save the image
     plt.savefig('docs/models_performances/evaluations/score_distribution_boxplot.png', bbox_inches='tight')
     plt.show()
@@ -104,15 +116,19 @@ def make_box_plot_avg_rankings(individual_df):
     
     # Box plot for rankings
     plt.figure(figsize=(15, 8))
-    sns.boxplot(x='animal', y='ranking', data=individual_df, palette=palette)
+    ax = sns.boxplot(x='animal', y='rank', data=individual_df, palette=palette)
     plt.title('Ranking Distribution by Animal')
     plt.xlabel('Animal')
-    plt.ylabel('Ranking')
+    plt.ylabel(f'Rankings (/{config.NUM_ANIMALS})')
     plt.xticks(rotation=90)
 
     # Invert the y-axis
-    plt.gca().invert_yaxis()
-    
+    # plt.gca().invert_yaxis()
+
+    # Customize tick labels with the corresponding colors
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(individual_df['animal'].unique()))]):
+        tick_label.set_color(color)
+
     # Save the image
-    plt.savefig('docs/models_performances/evaluations/ranking_distribution_boxplot.png', bbox_inches='tight')
+    plt.savefig('docs/models_performances/evaluations/rank_distribution_boxplot.png', bbox_inches='tight')
     plt.show()
