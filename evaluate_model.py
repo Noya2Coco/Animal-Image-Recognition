@@ -45,12 +45,12 @@ def calculate_statistics(scores, ranks, differences):
         avg_score = best_score = worst_score = None
 
     if ranks: 
-        # (3 vars in .../config.NUM_ANIMALS)
+        # (3 vars in .../config.NUM_ENTITIES)
         avg_rank = round(sum(ranks) / len(ranks), 2)
         best_rank = min(ranks)
         worst_rank = max(ranks)
     else:
-        avg_rank = best_rank = worst_rank = config.NUM_ANIMALS
+        avg_rank = best_rank = worst_rank = config.NUM_ENTITIES
 
     if differences: 
         # (3 vars in +...%)
@@ -138,7 +138,7 @@ def predictions_all_entities(model):
             img_path = os.path.join(root_folder, file)
             
             # Predict the image and get the top predictions
-            prediction = prediction_image(img_path, model, get_entity_list(), top_k=config.NUM_ANIMALS)
+            prediction = prediction_image(img_path, model, get_entity_list(), top_k=config.NUM_ENTITIES)
             
             # Get the score and ranking of the current entity in the predictions
             score, rank = get_entity_score_and_ranking(prediction, entity_name)
@@ -159,8 +159,8 @@ def predictions_all_entities(model):
                 prediction_info["rank"] = rank
                 ranks.append(rank)
             else:
-                prediction_info["rank"] = config.NUM_ANIMALS
-                ranks.append(config.NUM_ANIMALS)
+                prediction_info["rank"] = config.NUM_ENTITIES
+                ranks.append(config.NUM_ENTITIES)
 
             # Handle best entity and score difference information
             if rank and rank > 1:

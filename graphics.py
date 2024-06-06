@@ -10,7 +10,7 @@ def transform_format_data(data):
 
     for entity, details in data.items():
         global_record = {
-            'animal': entity,
+            'entity': entity,
             'avg_score': float(details['avg_score']) if details['avg_score'] is not None else 0.0,
             'best_score': float(details['best_score']) if details['best_score'] is not None else 0.0,
             'worst_score': float(details['worst_score']) if details['worst_score'] is not None else 0.0,
@@ -26,7 +26,7 @@ def transform_format_data(data):
         for key, value in details.items():
             if key.endswith('.jpeg'):
                 individual_record = {
-                    'animal': entity,
+                    'entity': entity,
                     'score': float(value['score']) if value['score'] is not None else 0.0,
                     'rank': int(value['rank']) if value['rank'] is not None else 0
                 }
@@ -41,9 +41,9 @@ def make_bar_plot_avg_scores(global_df):
 
     # Bar plot for average scores
     plt.figure(figsize=(15, 8))
-    ax = sns.barplot(x='animal', y='avg_score', data=global_df, palette=palette)
-    plt.title('Average Score Percentage by Animal')
-    plt.xlabel('Animal')
+    ax = sns.barplot(x='entity', y='avg_score', data=global_df, palette=palette)
+    plt.title('Average Score Percentage by Entity')
+    plt.xlabel('Entity')
     plt.ylabel('Average Score (%)')
     plt.xticks(rotation=90)
 
@@ -55,7 +55,7 @@ def make_bar_plot_avg_scores(global_df):
         plt.axhline(y=y, color='gray', linestyle='--', linewidth=0.5)
     
     # Customize tick labels with the corresponding colors
-    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(global_df['animal'].unique()))]):
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(global_df['entity'].unique()))]):
         tick_label.set_color(color)
     
     # Save the image
@@ -68,9 +68,9 @@ def make_bar_plot_avg_difference_best_scores(global_df):
     
     # Bar plot for average difference with best scores
     plt.figure(figsize=(15, 8))
-    ax = sns.barplot(x='animal', y='avg_diff_with_best_score', data=global_df, palette=palette)
-    plt.title('Average Difference with Best Scores by Animal')
-    plt.xlabel('Animal')
+    ax = sns.barplot(x='entity', y='avg_diff_with_best_score', data=global_df, palette=palette)
+    plt.title('Average Difference with Best Scores by Entity')
+    plt.xlabel('Entity')
     plt.ylabel('Average Difference with Best Scores (%)')
     plt.xticks(rotation=90)
 
@@ -82,7 +82,7 @@ def make_bar_plot_avg_difference_best_scores(global_df):
         plt.axhline(y=y, color='gray', linestyle='--', linewidth=0.5)
 
     # Customize tick labels with the corresponding colors
-    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(global_df['animal'].unique()))]):
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(global_df['entity'].unique()))]):
         tick_label.set_color(color)
     
     # Save the image
@@ -95,14 +95,14 @@ def make_box_plot_avg_score_percentage(individual_df):
     
     # Box plot for score percentages
     plt.figure(figsize=(15, 8))
-    ax = sns.boxplot(x='animal', y='score', data=individual_df, palette=palette)
-    plt.title('Score Percentage Distribution by Animal')
-    plt.xlabel('Animal')
+    ax = sns.boxplot(x='entity', y='score', data=individual_df, palette=palette)
+    plt.title('Score Percentage Distribution by Entity')
+    plt.xlabel('Entity')
     plt.ylabel('Scores (%)')
     plt.xticks(rotation=90)
 
     # Customize tick labels with the corresponding colors
-    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(individual_df['animal'].unique()))]):
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(individual_df['entity'].unique()))]):
         tick_label.set_color(color)
     
     # Save the image
@@ -116,17 +116,17 @@ def make_box_plot_avg_rankings(individual_df):
     
     # Box plot for rankings
     plt.figure(figsize=(15, 8))
-    ax = sns.boxplot(x='animal', y='rank', data=individual_df, palette=palette)
-    plt.title('Ranking Distribution by Animal')
-    plt.xlabel('Animal')
-    plt.ylabel(f'Rankings (/{config.NUM_ANIMALS})')
+    ax = sns.boxplot(x='entity', y='rank', data=individual_df, palette=palette)
+    plt.title('Ranking Distribution by Entity')
+    plt.xlabel('Entity')
+    plt.ylabel(f'Rankings (/{config.NUM_ENTITIES})')
     plt.xticks(rotation=90)
 
     # Invert the y-axis
     # plt.gca().invert_yaxis()
 
     # Customize tick labels with the corresponding colors
-    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(individual_df['animal'].unique()))]):
+    for tick_label, color in zip(ax.get_xticklabels(), [palette[i % len(palette)] for i in range(len(individual_df['entity'].unique()))]):
         tick_label.set_color(color)
 
     # Save the image

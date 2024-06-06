@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 import config
 
 # Répertoires contenant les images d'entraînement et de validation
-train_dir = f"animals_{config.ANIMALS_DB_VERSION}/train"
-validation_dir = f"animals_{config.ANIMALS_DB_VERSION}/validation"
+train_dir = f"{config.ENTITIES_DB_FOLDER}/train"
+validation_dir = f"{config.ENTITIES_DB_FOLDER}/validation"
 
 # Paramètres pour l'entraînement et la validation
 batch_size = config.BATCH_SIZE
-num_classes = config.NUM_ANIMALS
-num_train_images_per_class = config.TRAIN_IMAGES_PER_ANIMALS
-num_validation_images_per_class = config.VALIDATION_IMAGES_PER_ANIMALS
+num_classes = config.NUM_ENTITES
+num_train_images_per_class = config.TRAIN_IMAGES_PER_ENTITIES
+num_validation_images_per_class = config.VALIDATION_IMAGES_PER_ENTITES
 
 # Calcul du nombre d'étapes par epoch et de la validation_steps
 steps_per_epoch = (num_train_images_per_class * num_classes) // batch_size
@@ -108,7 +108,7 @@ history = model.fit(
 )
 
 # Enregistrer le modèle
-model.save(f"./animal_images_recognotion_models/{config.VERSION}.keras")
+model.save(f"./models/{config.VERSION}.keras")
 
 """
 evaluation
