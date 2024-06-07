@@ -10,7 +10,7 @@
 ### <ins>v0.2</ins> (✖️) (26-05-2024)
 - images per animals : 200 for train, 50 for validation (some doubles and some bad images)
 - batch_size : 4
-- new extension : .keras
+- new model extension : .keras
 
 ### <ins>v0.3</ins> (✔️) (26-05-2024)
 - batch_size = 16
@@ -29,5 +29,5 @@
 
 ## Help
 
-✔️ : new existing model
+✔️ : new existing model\
 ✖️ : no new model exists

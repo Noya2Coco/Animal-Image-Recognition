@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image # type: ignore
 
-import config
+import config.config as config
 from utils.file_utils import get_entity_list
 
 
@@ -115,7 +115,7 @@ def predictions_all_entities(model):
     # Dictionary to store predictions and statistics for each entity
     predictions = {}
     
-    root_path = config.PREDICTION_IMAGES_PATH
+    root_path = config.EVALUATION_IMAGES_PATH
 
     for root_folder, _, files in os.walk(root_path):
         # Skip the parent folder itself

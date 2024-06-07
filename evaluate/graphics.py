@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import config
+import config.config as config
 
 
 def transform_format_data(data):
