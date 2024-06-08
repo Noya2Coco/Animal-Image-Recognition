@@ -10,18 +10,18 @@ from utils.file_utils import get_entity_list, move_files
 from scraper.image_scraper import scrape_images
 
 
-def _scrape_images_for_all_animals(max_images, save_dir):
-    animals = get_entity_list()
+def _scrape_images_for_all_entities(max_images, save_dir):
+    entities = get_entity_list()
 
-    for i, animal in enumerate(animals, start=1):
-        print(f"\n==========================\n\nScraping images for {animal}... ({i}/{config.NUM_ENTITIES})")
-        scrape_images(animal, max_images, save_dir)
-        print(f"Finished scraping images for {animal}")
+    for i, entity in enumerate(entities, start=1):
+        print(f"\n==========================\n\nScraping images for {entity}... ({i}/{config.NUM_ENTITIES})")
+        scrape_images(entity, max_images, save_dir)
+        print(f"Finished scraping images for {entity}")
 
 
 def _prediction_for_all_folders():
     # Load the saved model
-    model = tf.keras.models.load_model(f"./models/{config.MODEL_LAST_VERSION}.keras")
+    model = tf.keras.models.load_model(f"{config.MODEL_VERSIONS_PATH}{config.MODEL_LAST_VERSION}.keras")
     # model = tf.keras.models.load_model('animal_classifier_models/v0.3.h5')
     # model = tf.keras.models.load_model('animal_classifier_models/v0.1.h5')
 
@@ -31,17 +31,21 @@ def _prediction_for_all_folders():
     
 def _move_20percents_files():
     # Chemins des répertoires
-    base_dir = 'animals_v02'
+    base_dir = config.ENTITIES_DB_PATH
     train_dir = os.path.join(base_dir, 'train')
     validation_dir = os.path.join(base_dir, 'validation')
 
-    animals = get_entity_list()
+    entities = get_entity_list()
 
     # Déplacer 20% des images de chaque classe
-    for animal_class in animals:
-        src_dir = os.path.join(train_dir, animal_class)
-        dest_dir = os.path.join(validation_dir, animal_class)
-        move_files(src_dir, dest_dir, 0.20)
+    for entity in entities:
+        try:
+            src_dir = os.path.join(train_dir, entity)
+            dest_dir = os.path.join(validation_dir, entity)
+            move_files(src_dir, dest_dir, 0.20)
+            print(f"Moved 20% of '{entity}'")
+        except:
+            print(f"Exception: There may not be a record for the entity '{entity}'")
 
 
 def _make_evaluation_graphics():
@@ -59,8 +63,9 @@ def _make_evaluation_graphics():
 
 
 def _main():
-    _scrape_images_for_all_animals(5, config.TRAIN_IMAGES_PATH)
-    # _prediction_for_all_folders()
+    # _scrape_images_for_all_entities(15, config.TRAIN_IMAGES_PATH)
+    # _scrape_images_for_all_entities(15, config.EVALUATION_IMAGES_PATH)
+    _prediction_for_all_folders()
     # _move_20percents_files()
     # _make_evaluation_graphics()
     pass

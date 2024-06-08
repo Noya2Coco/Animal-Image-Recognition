@@ -147,7 +147,7 @@ def process_image(img_src, entity_dir, entity, url_filename_mapping, img_count, 
     return img_count
 
 
-def scrape_images(entity, max_images, save_dir):
+def scrape_images(entity, max_images, save_dir=config.TRAIN_IMAGES_PATH):
     """
     Scrape images from Google Images based on the entity and save them to the specified directory.
 
