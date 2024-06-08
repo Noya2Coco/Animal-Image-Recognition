@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-import config
+import config.config as config
 from utils.file_utils import adjust_max_files, delete_last_files, get_next_filename
 from utils.image_utils import is_valid_image
 from utils.url_utils import hash_url, load_url_filename_mapping, save_url_filename_mapping
@@ -95,14 +95,14 @@ def scroll_and_collect_images(driver, max_images):
     return images
 
 
-def process_image(img_src, query_dir, query, url_filename_mapping, img_count, max_images):
+def process_image(img_src, entity_dir, entity, url_filename_mapping, img_count, max_images):
     """
     Process and save the image from the given source URL.
 
     Args:
         img_src (str): Image source URL.
-        query_dir (str): Directory to save the image.
-        query (str): Query string.
+        entity_dir (str): Directory to save the image.
+        entity (str): Entity string.
         url_filename_mapping (dict): URL to filename mapping.
         url_filename_mapping_file (str): Path to the URL-Filename mapping file.
         img_count (int): Current image count.
@@ -112,18 +112,18 @@ def process_image(img_src, query_dir, query, url_filename_mapping, img_count, ma
         int: Updated image count.
     """
     img_hash = hash_url(img_src)
-    if img_hash not in url_filename_mapping:
+    if img_hash not in url_filename_mapping.values():
         try:
             if img_src.startswith('data:image'):
                 img_type = img_src.split(';')[0].split('/')[-1]
                 base64_data = img_src.split(',')[1]
                 img_data = base64.b64decode(base64_data)
                 if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
-                    filename = get_next_filename(query_dir, query, img_type)
+                    filename = get_next_filename(entity_dir, entity, img_type)
                     with open(filename, 'wb') as img_file:
                         img_file.write(img_data)
                     img_count += 1
-                    url_filename_mapping[img_hash] = os.path.basename(filename)
+                    url_filename_mapping[os.path.basename(filename)] = img_hash
                     print(f"Downloaded - Hash: {img_hash}, Filename: {filename}")
             else:
                 if img_src.startswith('/'):
@@ -132,11 +132,11 @@ def process_image(img_src, query_dir, query, url_filename_mapping, img_count, ma
                 if response.status_code == 200:
                     img_data = response.content
                     if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
-                        filename = get_next_filename(query_dir, query, 'jpeg')
+                        filename = get_next_filename(entity_dir, entity, 'jpeg')
                         with open(filename, 'wb') as img_file:
                             img_file.write(img_data)
                         img_count += 1
-                        url_filename_mapping[img_hash] = os.path.basename(filename)
+                        url_filename_mapping[os.path.basename(filename)] = img_hash
                         print(f"Downloaded - Hash: {img_hash}, Filename: {filename}")
             if img_count >= max_images:
                 return img_count
@@ -147,35 +147,33 @@ def process_image(img_src, query_dir, query, url_filename_mapping, img_count, ma
     return img_count
 
 
-def scrape_images(query, max_images, save_dir):
+def scrape_images(entity, max_images, save_dir=config.TRAIN_IMAGES_PATH):
     """
-    Scrape images from Google Images based on the query and save them to the specified directory.
+    Scrape images from Google Images based on the entity and save them to the specified directory.
 
     Args:
-        query (str): Query string to search for images.
+        entity (str): Entity string to search for images.
         max_images (int): Maximum number of images to download.
         save_dir (str): Directory to save the downloaded images.
     """
-    query_dir = os.path.join(save_dir, query)
-    os.makedirs(query_dir, exist_ok=True)
+    entity_dir = os.path.join(save_dir, entity)
+    os.makedirs(entity_dir, exist_ok=True)
     url_filename_mapping_file = os.path.join(save_dir, 'url_filename_mapping.json')
 
-    # Load URL to Filename mapping for the specified query
-    url_filename_mapping = load_url_filename_mapping(url_filename_mapping_file, query)
+    # Load URL to Filename mapping for the specified entity
+    url_filename_mapping = load_url_filename_mapping(url_filename_mapping_file, entity)
 
     chrome_options = setup_chrome_options()
     driver = webdriver.Chrome(options=chrome_options)
 
-    url = f"https://www.google.com/search?q={query}&tbm=isch"
-    # url = f"https://www.google.com/search?q={query} animal&tbm=isch"
-    # url = f"https://www.google.com/search?q={query} photography&tbm=isch"
+    url = f"https://www.google.com/search?q={entity} animal&tbm=isch"
     driver.get(url)
 
     handle_accept_button(driver)
 
-    max_images = adjust_max_files(query_dir, max_images)
+    max_images = adjust_max_files(entity_dir, max_images)
     if max_images <= 0:
-        delete_last_files(query_dir, query, abs(max_images), url_filename_mapping_file)
+        delete_last_files(entity_dir, entity, abs(max_images), url_filename_mapping_file)
         return
 
     images = scroll_and_collect_images(driver, max_images)
@@ -187,11 +185,11 @@ def scrape_images(query, max_images, save_dir):
 
         img_src = img.get('src') or img.get('data-src')
         if img_src and is_valid_image(img_src):
-            img_count = process_image(img_src, query_dir, query, url_filename_mapping, url_filename_mapping_file, img_count, max_images)
+            img_count = process_image(img_src, entity_dir, entity, url_filename_mapping, img_count, max_images)
             if img_count >= max_images:
                 break
 
-    save_url_filename_mapping(url_filename_mapping_file, query, url_filename_mapping)
+    save_url_filename_mapping(url_filename_mapping_file, entity, url_filename_mapping)
     print(f"Total images downloaded: {img_count}")
 
     driver.quit()

@@ -2,11 +2,6 @@
 __pycache__/
 .vscode/
 
-animals_v0.1/
-animals_v0.2/
-animals_v0.3/
-
-animals_prediction_v0.1/
-animals_prediction_v0.2/
+images/
 
 tests_scraper/

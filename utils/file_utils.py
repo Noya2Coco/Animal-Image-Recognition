@@ -4,11 +4,11 @@ import shutil
 import random
 import glob
 
-import config
+import config.config as config
 from utils.url_utils import load_url_filename_mapping, save_url_filename_mapping
 
 
-def get_entity_list(file_path=config.ANIMALS_NAMES_PATH):
+def get_entity_list(file_path=config.ENTITIES_NAMES_PATH):
     """
     Read and return a list of entities from a file.
 
@@ -83,28 +83,28 @@ def get_folder_quota_remaining(base_dir, max_nb_files):
     return max_nb_files - num_files
 
 
-def adjust_max_files(query_dir, max_images):
+def adjust_max_files(entity_dir, max_images):
     """
     Adjust the maximum number of images based on remaining quota in the directory.
 
     Args:
-        query_dir (str): Directory path for the query.
+        entity_dir (str): Directory path for the entity.
         max_images (int): Maximum number of images.
 
     Returns:
         int: Adjusted maximum number of images.
     """
-    remaining_quota = get_folder_quota_remaining(query_dir, max_images)
+    remaining_quota = get_folder_quota_remaining(entity_dir, max_images)
     return min(max_images, remaining_quota)
 
 
-def get_next_filename(base_dir, query, ext):
+def get_next_filename(base_dir, entity, ext):
     """
     Generate the next filename based on existing files in the directory.
 
     Args:
         base_dir (str): Base directory path.
-        query (str): Query string.
+        entity (str): Entity string.
         ext (str): File extension.
 
     Returns:
@@ -113,7 +113,7 @@ def get_next_filename(base_dir, query, ext):
     existing_files = os.listdir(base_dir)
     
     # Define regex pattern to match filenames
-    pattern = re.compile(rf"{query}_(\d+)\.{ext}")
+    pattern = re.compile(rf"{entity}_(\d+)\.{ext}")
     
     # Extract numbers from existing filenames and sort them in descending order
     existing_numbers = sorted([int(pattern.match(f).group(1)) for f in existing_files if pattern.match(f)], reverse=True)
@@ -121,16 +121,16 @@ def get_next_filename(base_dir, query, ext):
     # Determine the next number in the sequence
     next_number = 0 if not existing_numbers else existing_numbers[0] + 1
     
-    return f"{base_dir}/{query}_{next_number}.{ext}"
+    return f"{base_dir}/{entity}_{next_number}.{ext}"
 
 
-def delete_last_files(directory, query, max_files, url_filename_mapping_file):
+def delete_last_files(directory, entity, max_files, url_filename_mapping_file):
     """
     Delete the last files in a directory and update the URL-Filename mapping file.
 
     Args:
         directory (str): Path to the directory containing the files.
-        query (str): Query string.
+        entity (str): Entity string.
         max_files (int): Maximum number of files to delete.
         url_filename_mapping_file (str): Path to the URL-Filename mapping file.
     """
@@ -152,14 +152,14 @@ def delete_last_files(directory, query, max_files, url_filename_mapping_file):
         
         # Remove the reference in the JSON file
         filename = os.path.basename(file)
-        url_filename_mapping = load_url_filename_mapping(url_filename_mapping_file, query)
+        url_filename_mapping = load_url_filename_mapping(url_filename_mapping_file, entity)
         for key, value in url_filename_mapping.items():
-            if value == filename:
+            if key == filename:
                 del url_filename_mapping[key]
                 break  # Exit the loop once the reference is removed
         
         # Update the JSON file
-        save_url_filename_mapping(url_filename_mapping_file, query, url_filename_mapping)
+        save_url_filename_mapping(url_filename_mapping_file, entity, url_filename_mapping)
         print(f"Deleted: {file}")
         
 
