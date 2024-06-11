@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-import config.config as config
+from config.config import config
 from utils.file_utils import adjust_max_files, delete_last_files, get_next_filename
 from utils.image_utils import is_valid_image
 from utils.url_utils import hash_url, load_url_filename_mapping, save_url_filename_mapping
@@ -118,7 +118,7 @@ def process_image(img_src, entity_dir, entity, url_filename_mapping, img_count, 
                 img_type = img_src.split(';')[0].split('/')[-1]
                 base64_data = img_src.split(',')[1]
                 img_data = base64.b64decode(base64_data)
-                if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
+                if len(img_data) >= config["MIN_IMAGE_SIZE_THRESHOLD"]:
                     filename = get_next_filename(entity_dir, entity, img_type)
                     with open(filename, 'wb') as img_file:
                         img_file.write(img_data)
@@ -131,7 +131,7 @@ def process_image(img_src, entity_dir, entity, url_filename_mapping, img_count, 
                 response = requests.get(img_src, stream=True)
                 if response.status_code == 200:
                     img_data = response.content
-                    if len(img_data) >= config.MIN_IMAGE_SIZE_THRESHOLD:
+                    if len(img_data) >= config["MIN_IMAGE_SIZE_THRESHOLD"]:
                         filename = get_next_filename(entity_dir, entity, 'jpeg')
                         with open(filename, 'wb') as img_file:
                             img_file.write(img_data)
@@ -147,7 +147,7 @@ def process_image(img_src, entity_dir, entity, url_filename_mapping, img_count, 
     return img_count
 
 
-def scrape_images(entity, max_images, save_dir=config.TRAIN_IMAGES_PATH):
+def scrape_images(entity, max_images, save_dir=config["TRAIN_IMAGES_PATH"]):
     """
     Scrape images from Google Images based on the entity and save them to the specified directory.
 

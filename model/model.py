@@ -4,12 +4,12 @@ from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense # type: ignore
 import matplotlib.pyplot as plt
 
-import config.config as config
+from config.config import config
 
 
 # Calcul du nombre d'étapes par epoch et de la validation_steps
-steps_per_epoch = (config.TRAIN_IMAGES_PER_ENTITIES * config.NUM_ENTITIES) // config.BATCH_SIZE
-validation_steps = (config.VALIDATION_IMAGES_PER_ENTITIES * config.NUM_ENTITIES) // config.BATCH_SIZE
+steps_per_epoch = (config["TRAIN_IMAGES_PER_ENTITIES"] * config["NUM_ENTITIES"]) // config["BATCH_SIZE"]
+validation_steps = (config["VALIDATION_IMAGES_PER_ENTITIES"] * config["NUM_ENTITIES"]) // config["BATCH_SIZE"]
 
 # Générer les données avec augmentation
 train_datagen = ImageDataGenerator(
@@ -26,15 +26,15 @@ validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
 # Génération des flux de données pour l'entraînement et la validation
 train_generator = train_datagen.flow_from_directory(
-    config.TRAIN_IMAGES_PATH,
+    config["TRAIN_IMAGES_PATH"],
     target_size=(150, 150),
-    batch_size=config.BATCH_SIZE,
+    batch_size=config["BATCH_SIZE"],
     class_mode='categorical')
 
 validation_generator = validation_datagen.flow_from_directory(
-    config.VALIDATION_IMAGES_PATH,
+    config["VALIDATION_IMAGES_PATH"],
     target_size=(150, 150),
-    batch_size=config.BATCH_SIZE,
+    batch_size=config["BATCH_SIZE"],
     class_mode='categorical')
 
 # Modèle CNN
@@ -49,7 +49,7 @@ model = Sequential([
     MaxPooling2D((2, 2)),
     Flatten(),
     Dense(512, activation='relu'),
-    Dense(config.NUM_ENTITIES, activation='softmax')
+    Dense(config["NUM_ENTITIES"], activation='softmax')
 ])
 
 # Compilation du modèle
@@ -76,13 +76,13 @@ def val_gen():
 train_ds = tf.data.Dataset.from_generator(
     train_gen,
     output_types=(tf.float32, tf.float32),
-    output_shapes=((None, 150, 150, 3), (None, config.NUM_ENTITIES))
+    output_shapes=((None, 150, 150, 3), (None, config["NUM_ENTITIES"]))
 )
 
 validation_ds = tf.data.Dataset.from_generator(
     val_gen,
     output_types=(tf.float32, tf.float32),
-    output_shapes=((None, 150, 150, 3), (None, config.NUM_ENTITIES))
+    output_shapes=((None, 150, 150, 3), (None, config["NUM_ENTITIES"]))
 )
 
 # Utilisation de la méthode .repeat() avec les objets tf.data.Dataset
@@ -99,7 +99,7 @@ history = model.fit(
 )
 
 # Enregistrer le modèle
-model.save(f"./models/{config.MODEL_LAST_VERSION}.keras")
+model.save(f"./models/{config["MODEL_LAST_VERSION"]}.keras")
 
 """
 evaluation

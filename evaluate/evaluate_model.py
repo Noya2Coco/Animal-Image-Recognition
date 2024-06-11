@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image # type: ignore
 
-import config.config as config
+from config.config import config
 from utils.file_utils import get_entity_list
 
 
@@ -45,12 +45,12 @@ def calculate_statistics(scores, ranks, differences):
         avg_score = best_score = worst_score = None
 
     if ranks: 
-        # (3 vars in .../config.NUM_ENTITIES)
+        # (3 vars in .../config["NUM_ENTITIES"])
         avg_rank = round(sum(ranks) / len(ranks), 2)
         best_rank = min(ranks)
         worst_rank = max(ranks)
     else:
-        avg_rank = best_rank = worst_rank = config.NUM_ENTITIES
+        avg_rank = best_rank = worst_rank = config["NUM_ENTITIES"]
 
     if differences: 
         # (3 vars in +...%)
@@ -115,7 +115,7 @@ def predictions_all_entities(model):
     # Dictionary to store predictions and statistics for each entity
     predictions = {}
     
-    root_path = config.EVALUATION_IMAGES_PATH
+    root_path = config["EVALUATION_IMAGES_PAT"]
 
     for root_folder, _, files in os.walk(root_path):
         # Skip the parent folder itself
@@ -138,7 +138,7 @@ def predictions_all_entities(model):
             img_path = os.path.join(root_folder, file)
             
             # Predict the image and get the top predictions
-            prediction = prediction_image(img_path, model, get_entity_list(), top_k=config.NUM_ENTITIES)
+            prediction = prediction_image(img_path, model, get_entity_list(), top_k=config["NUM_ENTITIES"])
             
             # Get the score and ranking of the current entity in the predictions
             score, rank = get_entity_score_and_ranking(prediction, entity_name)
@@ -159,8 +159,8 @@ def predictions_all_entities(model):
                 prediction_info["rank"] = rank
                 ranks.append(rank)
             else:
-                prediction_info["rank"] = config.NUM_ENTITIES
-                ranks.append(config.NUM_ENTITIES)
+                prediction_info["rank"] = config["NUM_ENTITIES"]
+                ranks.append(config["NUM_ENTITIES"])
 
             # Handle best entity and score difference information
             if rank and rank > 1:

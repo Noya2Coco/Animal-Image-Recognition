@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import config.config as config
+from config.config import config
 
 
 def transform_format_data(data):
@@ -119,7 +119,7 @@ def make_box_plot_avg_rankings(individual_df):
     ax = sns.boxplot(x='entity', y='rank', data=individual_df, palette=palette)
     plt.title('Ranking Distribution by Entity')
     plt.xlabel('Entity')
-    plt.ylabel(f'Rankings (/{config.NUM_ENTITIES})')
+    plt.ylabel(f'Rankings (/{config["NUM_ENTITIES"]})')
     plt.xticks(rotation=90)
 
     # Invert the y-axis

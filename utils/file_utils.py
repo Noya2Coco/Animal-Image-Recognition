@@ -4,11 +4,11 @@ import shutil
 import random
 import glob
 
-import config.config as config
+from config.config import config
 from utils.url_utils import load_url_filename_mapping, save_url_filename_mapping
 
 
-def get_entity_list(file_path=config.ENTITIES_NAMES_PATH):
+def get_entity_list(file_path=config["ENTITIES_NAMES_PATH"]):
     """
     Read and return a list of entities from a file.
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Image-Recognition{% endblock %}</title>
+</head>
+<body>
+    {% block navbar %}
+    <nav>
+        <a href="/">Home</a>
+        <a href="/infos">Informations</a>
+    </nav>
+    {% endblock %}
+
+    {% if message %}
+    {{ message }}
+    {% endif %}
+    
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

@@ -1,24 +1,26 @@
-# General
-DEBUG = True
+# config.py
+import json
 
-IMAGES_PATH = "images/"
+class Config:
+    def __init__(self, config_path='config/config.json'):
+        self.config_path = config_path
+        self.load_config()
 
-MODEL_VERSIONS_PATH = "model/versions/"
-MODEL_LAST_VERSION = "v0.3"
+    def load_config(self):
+        with open(self.config_path, 'r') as f:
+            config_data = json.load(f)
+            self.__dict__.update(config_data)
 
-ENTITIES_NAMES_PATH = "config/entities.txt"
-ENTITIES_DB_PATH = f"{IMAGES_PATH}entities/"
-ENTITIES_DB_VERSION = "v0.2" # Must be deleted for a single version
+    def save_config(self):
+        with open(self.config_path, 'w') as f:
+            json.dump(self.__dict__, f, indent=4)
 
-TRAIN_IMAGES_PATH = f"{ENTITIES_DB_PATH}train/"
-VALIDATION_IMAGES_PATH = f"{ENTITIES_DB_PATH}validation/"
-EVALUATION_IMAGES_PATH = f"{ENTITIES_DB_PATH}evaluation/"
+    def __getitem__(self, item):
+        return self.__dict__.get(item)
 
-# AI
-BATCH_SIZE = 16
-NUM_ENTITIES = 90
-TRAIN_IMAGES_PER_ENTITIES = 200
-VALIDATION_IMAGES_PER_ENTITIES = 50
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+        self.save_config()
 
-# Scraper
-MIN_IMAGE_SIZE_THRESHOLD = 5000 # Bytes
+# Instantiate a global config object
+config = Config()

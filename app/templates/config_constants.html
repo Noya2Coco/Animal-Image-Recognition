@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Configuration Constants</h1>
+<form action="/config/constants" method="post">
+    <label for="DEBUG">DEBUG:</label>
+    <input type="checkbox" id="DEBUG" name="DEBUG" value="true" {% if config.DEBUG %}checked{% endif %}><br><br>
+    
+    <label for="IMAGES_PATH">IMAGES_PATH:</label>
+    <input type="text" id="IMAGES_PATH" name="IMAGES_PATH" value="{{ config.IMAGES_PATH }}"><br><br>
+
+    <label for="MODEL_VERSIONS_PATH">MODEL_VERSIONS_PATH:</label>
+    <input type="text" id="MODEL_VERSIONS_PATH" name="MODEL_VERSIONS_PATH" value="{{ config.MODEL_VERSIONS_PATH }}"><br><br>
+
+    <label for="MODEL_LAST_VERSION">MODEL_LAST_VERSION:</label>
+    <input type="text" id="MODEL_LAST_VERSION" name="MODEL_LAST_VERSION" value="{{ config.MODEL_LAST_VERSION }}"><br><br>
+
+    <label for="ENTITIES_NAMES_PATH">ENTITIES_NAMES_PATH:</label>
+    <input type="text" id="ENTITIES_NAMES_PATH" name="ENTITIES_NAMES_PATH" value="{{ config.ENTITIES_NAMES_PATH }}"><br><br>
+
+    <label for="ENTITIES_DB_PATH">ENTITIES_DB_PATH:</label>
+    <input type="text" id="ENTITIES_DB_PATH" name="ENTITIES_DB_PATH" value="{{ config.ENTITIES_DB_PATH }}"><br><br>
+
+    <label for="ENTITIES_DB_VERSION">ENTITIES_DB_VERSION:</label>
+    <input type="text" id="ENTITIES_DB_VERSION" name="ENTITIES_DB_VERSION" value="{{ config.ENTITIES_DB_VERSION }}"><br><br>
+
+    <label for="TRAIN_IMAGES_PATH">TRAIN_IMAGES_PATH:</label>
+    <input type="text" id="TRAIN_IMAGES_PATH" name="TRAIN_IMAGES_PATH" value="{{ config.TRAIN_IMAGES_PATH }}"><br><br>
+
+    <label for="VALIDATION_IMAGES_PATH">VALIDATION_IMAGES_PATH:</label>
+    <input type="text" id="VALIDATION_IMAGES_PATH" name="VALIDATION_IMAGES_PATH" value="{{ config.VALIDATION_IMAGES_PATH }}"><br><br>
+
+    <label for="EVALUATION_IMAGES_PATH">EVALUATION_IMAGES_PATH:</label>
+    <input type="text" id="EVALUATION_IMAGES_PATH" name="EVALUATION_IMAGES_PATH" value="{{ config.EVALUATION_IMAGES_PATH }}"><br><br>
+
+    <label for="BATCH_SIZE">BATCH_SIZE:</label>
+    <input type="number" id="BATCH_SIZE" name="BATCH_SIZE" value="{{ config.BATCH_SIZE }}"><br><br>
+
+    <label for="NUM_ENTITIES">NUM_ENTITIES:</label>
+    <input type="number" id="NUM_ENTITIES" name="NUM_ENTITIES" value="{{ config.NUM_ENTITIES }}"><br><br>
+
+    <label for="TRAIN_IMAGES_PER_ENTITIES">TRAIN_IMAGES_PER_ENTITIES:</label>
+    <input type="number" id="TRAIN_IMAGES_PER_ENTITIES" name="TRAIN_IMAGES_PER_ENTITIES" value="{{ config.TRAIN_IMAGES_PER_ENTITIES }}"><br><br>
+
+    <label for="VALIDATION_IMAGES_PER_ENTITIES">VALIDATION_IMAGES_PER_ENTITIES:</label>
+    <input type="number" id="VALIDATION_IMAGES_PER_ENTITIES" name="VALIDATION_IMAGES_PER_ENTITIES" value="{{ config.VALIDATION_IMAGES_PER_ENTITIES }}"><br><br>
+
+    <label for="MIN_IMAGE_SIZE_THRESHOLD">MIN_IMAGE_SIZE_THRESHOLD:</label>
+    <input type="number" id="MIN_IMAGE_SIZE_THRESHOLD" name="MIN_IMAGE_SIZE_THRESHOLD" value="{{ config.MIN_IMAGE_SIZE_THRESHOLD }}"><br><br>
+
+    <input type="submit" value="Submit">
+    <button type="button" onclick="window.location=''">Annuler</button>
+</form>
+{% endblock %}

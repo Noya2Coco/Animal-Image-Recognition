@@ -1,0 +1,18 @@
+{
+    "config_path": "config/config.json",
+    "DEBUG": true,
+    "IMAGES_PATH": "images/",
+    "MODEL_VERSIONS_PATH": "model/versions/",
+    "MODEL_LAST_VERSION": "v0.3",
+    "ENTITIES_NAMES_PATH": "config/entities.txt",
+    "ENTITIES_DB_PATH": "images/entities/",
+    "ENTITIES_DB_VERSION": "v0.2",
+    "TRAIN_IMAGES_PATH": "images/entities/train/",
+    "VALIDATION_IMAGES_PATH": "images/entities/validation/",
+    "EVALUATION_IMAGES_PATH": "images/entities/evaluation/",
+    "BATCH_SIZE": 16,
+    "NUM_ENTITIES": 90,
+    "TRAIN_IMAGES_PER_ENTITIES": 12,
+    "VALIDATION_IMAGES_PER_ENTITIES": 3,
+    "MIN_IMAGE_SIZE_THRESHOLD": 5000
+}
