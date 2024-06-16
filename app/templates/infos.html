@@ -19,51 +19,51 @@
 {% endif %}
 
 {% if infos %}
-    <div>
-        <table border="1">
-            <caption>
-                Informations
-            </caption>
-            <thead>
-                <th>Title</th>
-                <th>Option</th>
-                <th>List</th>
-                <th>Counter</th>
-                <th>Special Note</th>
-            </thead>
-            <tbody>
-                {% for key, values in infos.items() %}
-                <tr>
-                    {% if key == 'entities_list' %}
-                    <th>Entities name</th>
-                    <td><a href="/config/constants" class="button">Modify</a></td>
-                    {% elif key == 'entities_train_not_quota' %}
-                    <th>Entities don't have image quota (train)</th>
+<div>
+    <table border="1">
+        <caption>
+            Informations
+        </caption>
+        <thead>
+            <th>Title</th>
+            <th>Option</th>
+            <th>List</th>
+            <th>Counter</th>
+            <th>Special Note</th>
+        </thead>
+        <tbody>
+            {% for key, values in infos.items() %}
+            <tr>
+                {% if key == 'entities_list' %}
+                <th>Entities name</th>
+                <td><a href="#" class="button">Modify</a></td>
+                {% elif key == 'entities_train_not_quota' %}
+                <th>Entities don't have image quota (train)</th>
+                <td><a href="#" class="button"></a></td>
+                {% elif key == 'entities_validation_not_quota' %}
+                <th>Entities don't have image quota (validation)</th>
+                <td><a href="#" class="button"></a></td>
+                {% else %}
+                    <th>{{ key }}</th>
                     <td><a href="#" class="button"></a></td>
-                    {% elif key == 'entities_validation_not_quota' %}
-                    <th>Entities don't have image quota (validation)</th>
-                    <td><a href="#" class="button"></a></td>
-                    {% else %}
-                        <th>{{ key }}</th>
-                        <td><a href="#" class="button"></a></td>
-                    {% endif %}
-                    <td>
-                        <select>
-                            {% for value in values %}
-                                {% if loop.first %}
-                                    <option selected="true" disabled="true">{{ value }}</option>
-                                {% else %}
-                                    <option disabled="true">{{ value }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td>{{ values | length }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                {% endif %}
+                <td>
+                    <select>
+                        {% for value in values %}
+                            {% if loop.first %}
+                                <option selected="true" disabled="true">{{ value }}</option>
+                            {% else %}
+                                <option disabled="true">{{ value }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>{{ values | length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endif %}
 
 {% endblock content %}

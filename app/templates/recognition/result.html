@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Recognition Result</h1>
+
+<p><strong>Model used:</strong> {{ model }}</p>
+<p><strong>File uploaded:</strong> {{ filename }}</p>
+
+<table border="1">
+    <thead>
+        <th>Rank</th>
+        <th>Entity</th>
+        <th>Score</th>
+        <th>Score (in %)</th>
+    </thead>
+    <tbody>
+        {% for entity in prediction %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <th>{{ entity[0] }}</th>
+            <td>{{ entity[1] }}</td>
+            <th>{{ (entity[1] * 100) | round(2) }}</th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

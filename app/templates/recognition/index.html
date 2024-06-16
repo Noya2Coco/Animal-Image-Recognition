@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Recognition</h1>
+
+<div>
+    {% if models | length > 0 %}
+    <form action="/recognition/result" method="post" enctype="multipart/form-data">
+        <div>
+            <h3>Model</h3>
+            <select name="model">
+            {% for model in models %}
+                <option>{{ model }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div>
+            <h3>Your Image</h3>
+            <label for="image">Select an image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+        <input type="submit" value="Get Recognition">
+    </form>
+    {% else %}
+    <h3>There is no model</h3>
+    {% endif %}
+<div>
+
+{% endblock %}

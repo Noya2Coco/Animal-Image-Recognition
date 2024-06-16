@@ -5,6 +5,12 @@ from config.config import config
 
 config_bp = Blueprint('config', __name__, url_prefix='/config')
 
+
+@config_bp.route('/')
+def home():
+    return render_template('config/index.html')
+
+
 @config_bp.route('/constants', methods=['GET', 'POST'])
 def constants():
     if request.method == 'POST':
@@ -23,10 +29,11 @@ def constants():
         config['TRAIN_IMAGES_PER_ENTITIES'] = int(request.form.get('TRAIN_IMAGES_PER_ENTITIES'))
         config['VALIDATION_IMAGES_PER_ENTITIES'] = int(request.form.get('VALIDATION_IMAGES_PER_ENTITIES'))
         config['MIN_IMAGE_SIZE_THRESHOLD'] = int(request.form.get('MIN_IMAGE_SIZE_THRESHOLD'))
-
+        # NEED TO ADD NEW CONSTANTS
+        
         message = "Constants have been modified"
         
         return redirect(url_for('main.infos', message=message))
 
-    return render_template('config_constants.html', config=config.__dict__)
+    return render_template('config/constants.html', config=config.__dict__)
     

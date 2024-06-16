@@ -28,6 +28,20 @@ def is_valid_image(url):
         # If an error occurs (e.g., URL is not reachable), consider it as an invalid image
         return False
     
+
+def is_image(filename):
+    """
+    Check if a filename has an allowed image extension.
+
+    Args:
+        filename (str): The filename to check.
+
+    Returns:
+        bool: True if the filename has an allowed image extension, False otherwise.
+    """
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
+    
     
 def save_base64_image(base64_data, filename):
     """

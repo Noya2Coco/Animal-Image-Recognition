@@ -182,3 +182,22 @@ def move_files(src_dir, dest_dir, percentage):
     # Move the selected files
     for file in files_to_move:
         shutil.move(os.path.join(src_dir, file), os.path.join(dest_dir, file))
+        
+        
+def get_files_ext(dir, ext):
+    """
+    Get a list of files with a specific extension in a given directory.
+
+    Args:
+        dir (str): The directory path to search in.
+        ext (str): The file extension to search for (e.g., '.txt').
+
+    Returns:
+        list: A list of filenames (with the specified extension) found in the directory.
+    """
+    # Create a search pattern for files with the specified extension in the given directory.
+    pattern = os.path.join(dir, f'*{ext}')
+    
+    # Use glob to find all files matching the pattern and return their base names.
+    return [os.path.basename(file) for file in glob.glob(pattern)]
+

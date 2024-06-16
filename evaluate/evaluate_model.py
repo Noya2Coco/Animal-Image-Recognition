@@ -73,7 +73,7 @@ def calculate_statistics(scores, ranks, differences):
     }
 
 
-def prediction_image(img_path, model, classes, top_k=10):
+def prediction_image(img_path, model, classes=get_entity_list(), top_k=10):
     """
     Predict the top classes for an image using a trained model.
 
@@ -97,7 +97,7 @@ def prediction_image(img_path, model, classes, top_k=10):
     top_indices = np.argsort(predictions)[::-1][:top_k]
 
     # Create a list of top k class predictions with scores
-    ranked_classes = [(classes[i], predictions[i]) for i in top_indices]
+    ranked_classes = [(classes[i], round(float(predictions[i]), 3)) for i in top_indices]
 
     return ranked_classes
 

@@ -14,4 +14,7 @@ def create_app():
     from .routes.config import config_bp
     app.register_blueprint(config_bp)
     
+    from .routes.recognition import recognition_bp
+    app.register_blueprint(recognition_bp)
+    
     return app
